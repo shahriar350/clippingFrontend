@@ -92,7 +92,7 @@
               label="Your images:"
               label-for="images"
             >
-              <b-form-file multiple v-model="get_client_images"></b-form-file>
+              <b-form-file v-model="get_client_images"></b-form-file>
               <b-progress show-value class="mt-1" v-if="progress > 0" :value="progress" max="100"></b-progress>
 <!--              <b-form-file multiple v-model="get_client_images" id="images"></b-form-file>-->
             </b-form-group>
@@ -123,7 +123,7 @@ export default {
       },
       files: [],
       progress: 0,
-      get_client_images: [],
+      get_client_images: null,
       job_types: [],
     }
   },
@@ -138,21 +138,20 @@ export default {
       this.$axios.post("/api/clientuser/",this.form)
         .then(res => {
           const data = res.data
-          for (let i = 0; i < this.get_client_images.length; i++) {
-            this.progress = 0
-            let formdata = new FormData()
-            formdata.set("client",data.id)
-            formdata.set("image",this.get_client_images[i])
-            this.$axios.post('/api/clientimage/',formdata,{
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              },
-              onUploadProgress: function( progressEvent ) {
-                this.progress = parseInt( Math.round( ( progressEvent.loaded / progressEvent.total ) * 100 ) );
-              }.bind(this)
-            })
+          this.progress = 0
+          let formdata = new FormData()
+          formdata.set("client",data.id)
+          formdata.set("image",this.get_client_images)
+          this.$axios.post('/api/clientimage/',formdata,{
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            onUploadProgress: function( progressEvent ) {
+              this.progress = parseInt( Math.round( ( progressEvent.loaded / progressEvent.total ) * 100 ) );
+            }.bind(this)
+          })
 
-          }
+
           this.$bvToast.toast("Send request successfully", {
             title: 'Sending order',
             autoHideDelay: 5000,

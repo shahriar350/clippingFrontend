@@ -1,4 +1,4 @@
-import Vue from "vue";
-import ImageCompare from "image-compare-viewer";
+import Vue from 'vue';
+import VueImageCompare from 'vue-image-compare';
 
-Vue.use(ImageCompare)
+Vue.use(VueImageCompare);
